@@ -1,0 +1,81 @@
+version: '3'
+
+services:
+
+  back-end:
+
+      build:
+
+          context: './back-end'
+
+          dockerfile: Dockerfile
+
+      ports:
+          - 4000:4000
+
+      container_name: back-end-container
+
+      environment:
+          - WATCHPACK_POLLING=true
+      
+      networks: 
+
+          - mern-stack-network
+
+      volumes: 
+
+          - ./back-end:/app
+
+  
+  next-app:
+
+      build:
+
+          context: './next-app'
+
+          dockerfile: Dockerfile
+
+      ports:
+          - 3000:3000
+
+      container_name: next-app-container
+
+      environment:
+          - WATCHPACK_POLLING=true
+      
+      networks: 
+
+          - mern-stack-network
+
+      volumes: 
+
+          - ./next-app:/app
+
+      depends_on:
+          - back-end
+  
+  mongo:
+
+    image: mongo
+
+    ports:
+      - 27017:27017
+
+    container_name: mongo-container
+
+    networks:
+      - mern-stack-network
+
+    volumes:
+      - mongoData:/data/db
+
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=ecom
+  
+networks:
+  mern-stack-network:  
+
+volumes:
+  mongoData:
